@@ -1,3 +1,5 @@
+![Final Photo](images/Final_Photo.JPG)
+
 # 📱 Where Is My Phone Button
 
 A standalone, Wi-Fi-enabled physical button that calls your phone when pressed. Built with an ESP32, a satisfying mechanical keyboard switch, and a custom 3D-printed enclosure featuring an engineered flexure spring for perfect tactile feedback. 
@@ -8,7 +10,7 @@ No more asking someone else to call your phone or shouting for a smart speaker�
 * **Satisfying Tactile Feedback:** Uses a mechanical keyboard switch coupled with a custom 3D-printed stabilizer spring.
 * **Standalone Operation:** Connects directly to Wi-Fi via an ESP32; no companion app or bridge required.
 * **Reliable API Trigger:** Integrates with the Twilio Voice API to initiate an actual phone call to any verified number.
-* **Free Of Charge** You can use the free trail by Twilio to avoid payment
+* **Free Of Charge:** You can use the free trial by Twilio to avoid payment.
 
 ## 🛠️ Hardware Requirements
 * 1x ESP32 Development Board 
@@ -19,9 +21,7 @@ No more asking someone else to call your phone or shouting for a smart speaker�
 * 3x M3 Screws
 * 4x M4*4*6 Heat Inserts
 * 4x M4 Screws
-* soldering kit
-
-
+* Soldering kit
 
 ## 🖨️ 3D Printing
 The enclosure and custom serpentine flexure spring were designed to provide a crisp return force against the center axis. The design files can easily be modified in Fusion 360 or SolidWorks if you need to adjust the tolerances for your specific printer.
@@ -39,6 +39,8 @@ The enclosure and custom serpentine flexure spring were designed to provide a cr
 8. add the m3 heat insert on each corner
 9. screw in the flat top cover
 10. press in the top part of the button
+
+![Assembly Photo](images/Assemb_Photo.JPG)
 
 ## 💻 Software Setup
 
