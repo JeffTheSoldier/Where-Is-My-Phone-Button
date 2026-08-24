@@ -1,4 +1,4 @@
-![Final Photo](images/Final_Photo.JPG)
+<img src="images/Final_Photo.JPG" width="400" alt="Final Photo" />
 
 # 📱 Where Is My Phone Button
 
@@ -40,7 +40,7 @@ The enclosure and custom serpentine flexure spring were designed to provide a cr
 9. screw in the flat top cover
 10. press in the top part of the button
 
-![Assembly Photo](images/Assemb_Photo.JPG)
+<img src="images/Asemb_Photo.JPG" width="400" alt="Assembly Photo" />
 
 ## 💻 Software Setup
 
