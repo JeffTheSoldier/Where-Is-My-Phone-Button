@@ -1,0 +1,102 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <WiFiClientSecure.h>
+#include <base64.h> // ADDED: Required for manual authentication
+
+// --- WiFi Credentials ---
+const char* ssid     = "********";
+const char* password = "********";
+
+// --- Twilio Configuration ---
+const char* accountSid = "*******************************";
+const char* authToken  = "*******************************";
+
+// URL-encoded '+972...' -> '%2B972...'
+const char* toNumber   = "%2B972*********"; 
+const char* fromNumber = "%2B972*********"; 
+
+// For Custom text
+const char* twimlUrl   = "https://handler.twilio.com/twiml/*******************************";
+
+// --- Hardware Pins ---
+const int BUTTON_PIN = 4;
+const int LED_PIN    = 2; // Built-in LED on most ESP32 boards
+
+bool callInProgress = false;
+
+void triggerTwilioCall() {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi not connected!");
+    return;
+  }
+
+  digitalWrite(LED_PIN, HIGH);
+  Serial.println("Contacting Twilio API...");
+
+  WiFiClientSecure client;
+  client.setInsecure(); // Skips certificate verification for simple implementation
+
+  HTTPClient http;
+  String endpoint = "https://api.twilio.com/2010-04-01/Accounts/" + String(accountSid) + "/Calls.json";
+
+  if (http.begin(client, endpoint)) {
+    
+    // FIX: Manually generate Base64 Auth header instead of using setAuthorization()
+    String auth = String(accountSid) + ":" + String(authToken);
+    String authEncoded = base64::encode(auth);
+    http.addHeader("Authorization", "Basic " + authEncoded);
+    
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    // Construct URL-encoded POST payload
+    String payload = "To=" + String(toNumber) +
+                     "&From=" + String(fromNumber) +
+                     "&Url=" + String(twimlUrl);
+
+    int httpResponseCode = http.POST(payload);
+
+    if (httpResponseCode == 201) {
+      Serial.println("Call placed successfully! Your phone should ring now.");
+    } else {
+      Serial.printf("Twilio API Error! HTTP Code: %d\n", httpResponseCode);
+      String response = http.getString();
+      Serial.println("Response payload: " + response);
+    }
+    http.end();
+  } else {
+    Serial.println("Unable to connect to Twilio endpoint.");
+  }
+
+  digitalWrite(LED_PIN, LOW);
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+
+  Serial.print("Connecting to WiFi");
+  WiFi.begin(ssid, password);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi connected! Ready for button press.");
+}
+
+void loop() {
+  // Read active-low button press
+  if (digitalRead(BUTTON_PIN) == LOW && !callInProgress) {
+    callInProgress = true;
+    Serial.println("Button pressed!");
+    
+    triggerTwilioCall();
+    
+    // Prevent rapid multiple triggers (5-second cooldown)
+    delay(5000);
+    callInProgress = false;
+  }
+  delay(50);
+}
